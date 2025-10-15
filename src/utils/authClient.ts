@@ -1,6 +1,7 @@
 import { createAuthClient } from 'better-auth/react';
 
-const baseURL = process.env.NEXT_PUBLIC_BETTER_AUTH_URL || 'http://localhost:4000';
+const baseURLRaw = process.env.NEXT_PUBLIC_BETTER_AUTH_URL || 'http://localhost:4000';
+const baseURL = baseURLRaw.replace(/\/+$/, ''); // trim trailing slashes
 
 const client = createAuthClient({ baseURL });
 

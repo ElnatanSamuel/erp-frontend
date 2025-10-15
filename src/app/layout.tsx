@@ -1,6 +1,7 @@
 import './globals.css';
 import type { ReactNode } from 'react';
 import AuthBootstrap from '../components/system/AuthBootstrap';
+import RouteGuard from '../components/system/RouteGuard';
 
 export const metadata = {
   title: 'ERP',
@@ -16,6 +17,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en">
       <body>
         <AuthBootstrap />
+        <RouteGuard />
         <main className="min-h-screen">{children}</main>
       </body>
     </html>
