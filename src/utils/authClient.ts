@@ -1,12 +1,13 @@
 import { createAuthClient } from 'better-auth/react';
 const baseURLRaw = process.env.NEXT_PUBLIC_BETTER_AUTH_URL || 'http://localhost:4000';
 const baseURL = baseURLRaw.replace(/\/+$/, ''); // trim trailing slashes
+const authBase = `${baseURL}/api/auth`;
 
-const client = createAuthClient({ baseURL });
+const client = createAuthClient({ baseURL: authBase });
 
 // helper to POST JSON with credentials
 async function postJson(path: string, body: any) {
-  const res = await fetch(`${baseURL}${path}`, {
+  const res = await fetch(`${authBase}${path}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
@@ -24,7 +25,7 @@ export const authClient = {
   // Explicit session fetcher for places that call getSession()
   async getSession() {
     try {
-      const res = await fetch(`${baseURL}/api/auth/get-session`, {
+      const res = await fetch(`${authBase}/get-session`, {
         credentials: 'include',
       });
       if (!res.ok) {
