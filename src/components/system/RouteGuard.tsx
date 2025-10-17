@@ -13,15 +13,19 @@ export default function RouteGuard() {
   useEffect(() => {
     const isPublic = PUBLIC_PATHS.some((p) => pathname?.startsWith(p));
     if (isPublic) return;
-    (async () => {
+    
+    const checkAuth = async () => {
       try {
-        const session = await authClient.getSession();
-        const hasUser = Boolean(session?.data?.user || session?.data?.session);
-        if (!hasUser) router.replace('/auth/login');
+        const { data } = await authClient.getMe();
+        if (!data?.user) {
+          router.replace('/auth/login');
+        }
       } catch {
         router.replace('/auth/login');
       }
-    })();
+    };
+    
+    checkAuth();
   }, [pathname, router]);
 
   return null;

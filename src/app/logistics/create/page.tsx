@@ -10,7 +10,6 @@ import { api } from '../../../utils/api';
 import { authClient } from '../../../utils/authClient';
 
 export default function CreateLogisticsPage() {
-  const { data: session } = authClient.useSession();
 
   const [title, setTitle] = useState('');
   const [purpose, setPurpose] = useState('');
@@ -51,9 +50,11 @@ export default function CreateLogisticsPage() {
   };
 
   useEffect(() => {
-    const name = (session?.user as any)?.name || '';
-    if (name) setRequestedBy(name);
-  }, [session]);
+    authClient.getMe().then(({ data }) => {
+      const name = data?.user?.name || '';
+      if (name) setRequestedBy(name);
+    }).catch(() => {});
+  }, []);
 
   useEffect(() => {
     (async () => {

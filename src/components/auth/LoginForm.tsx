@@ -1,17 +1,12 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '../ui/button';
-import { useResource } from '@elnatan/better-state/react';
-import { login } from '../../state/auth';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
-import { fromPromise } from '@elnatan/better-state/async';
-import { useRouter } from 'next/navigation';
 import { authClient } from '../../utils/authClient';
 
 export default function LoginForm() {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -26,16 +21,16 @@ export default function LoginForm() {
   useEffect(() => {
     if (!mounted) return;
     
-    // Check session after mount
-    const checkSession = async () => {
+    // Check if already logged in
+    const checkAuth = async () => {
       try {
-        const session = await authClient.getSession();
-        if (session?.data?.session) {
+        const { data } = await authClient.getMe();
+        if (data?.user) {
           window.location.replace('/');
         }
       } catch {}
     };
-    checkSession();
+    checkAuth();
   }, [mounted]);
 
   async function onSubmit(e: React.FormEvent) {
@@ -44,10 +39,17 @@ export default function LoginForm() {
     setLoading(true);
     
     try {
-      await authClient.signIn.email({ email, password });
-      window.location.replace('/');
+      const result = await authClient.login({ email, password });
+      
+      if (result?.token && result?.user) {
+        // Successful login, redirect to dashboard
+        window.location.replace('/');
+      } else {
+        setError('Invalid email or password');
+        setLoading(false);
+      }
     } catch (err: any) {
-      setError(err?.message || 'Login failed');
+      setError(err.message || 'Invalid email or password');
       setLoading(false);
     }
   }

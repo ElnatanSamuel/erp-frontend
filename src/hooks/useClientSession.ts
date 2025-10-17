@@ -4,14 +4,22 @@ import { useEffect, useState } from 'react';
 import { authClient } from '../utils/authClient';
 
 export function useClientSession() {
-  const [mounted, setMounted] = useState(false);
+  const [data, setData] = useState<any>(null);
+  const [isPending, setIsPending] = useState(true);
+  const [error, setError] = useState<any>(null);
   
   useEffect(() => {
-    setMounted(true);
+    authClient.getMe()
+      .then(({ data, error }) => {
+        setData(data);
+        setError(error);
+        setIsPending(false);
+      })
+      .catch((err) => {
+        setError(err);
+        setIsPending(false);
+      });
   }, []);
-
-  // Only call useSession after mount to avoid SSR issues
-  const session = mounted ? authClient.useSession() : { data: null, isPending: true, error: null };
   
-  return session;
+  return { data, isPending, error };
 }

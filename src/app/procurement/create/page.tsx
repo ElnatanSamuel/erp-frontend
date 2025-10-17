@@ -10,7 +10,7 @@ import { api } from '../../../utils/api';
 import { authClient } from '../../../utils/authClient';
 
 export default function CreateProcurementPage() {
-  const { data: session } = authClient.useSession();
+  const [userName, setUserName] = useState('');
 
   const [itemName, setItemName] = useState('');
   const [quantity, setQuantity] = useState('');
@@ -44,9 +44,14 @@ export default function CreateProcurementPage() {
   };
 
   useEffect(() => {
-    const name = (session?.user as any)?.name || '';
-    if (name) setRequestedBy(name);
-  }, [session]);
+    authClient.getMe().then(({ data }) => {
+      const name = data?.user?.name || '';
+      if (name) {
+        setUserName(name);
+        setRequestedBy(name);
+      }
+    }).catch(() => {});
+  }, []);
 
   useEffect(() => {
     const qty = Number(quantity) || 0;

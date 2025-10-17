@@ -1,60 +1,73 @@
-import { createAuthClient } from 'better-auth/react';
-const baseURLRaw = process.env.NEXT_PUBLIC_BETTER_AUTH_URL || 'http://localhost:4000';
-const baseURL = baseURLRaw.replace(/\/+$/, ''); // trim trailing slashes
-const authBase = `${baseURL}/api/auth`;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
-const client = createAuthClient({ baseURL: authBase });
-
-// helper to POST JSON with credentials
-async function postJson(path: string, body: any) {
-  const res = await fetch(`${authBase}${path}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: JSON.stringify(body ?? {}),
-  });
-  if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    throw new Error(text || `HTTP ${res.status}`);
-  }
-  return res.json().catch(() => undefined);
-}
-// Create SSR-safe wrapper
+// JWT Auth Client
 export const authClient = {
-  ...client,
-  // Explicit session fetcher for places that call getSession()
-  async getSession() {
+  async register({ email, password, name }: { email: string; password: string; name: string }) {
+    const res = await fetch(`${API_URL}/api/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ email, password, name }),
+    });
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Registration failed' }));
+      throw new Error(error.message || 'Registration failed');
+    }
+    return res.json();
+  },
+
+  async login({ email, password }: { email: string; password: string }) {
+    const res = await fetch(`${API_URL}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ email, password }),
+    });
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Login failed' }));
+      throw new Error(error.message || 'Invalid credentials');
+    }
+    const data = await res.json();
+    // Store token in localStorage
+    if (data.token) {
+      localStorage.setItem('auth_token', data.token);
+    }
+    return data;
+  },
+
+  async getMe() {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+    if (!token) return { data: null, error: new Error('No token') };
+
     try {
-      const res = await fetch(`${authBase}/get-session`, {
+      const res = await fetch(`${API_URL}/api/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
         credentials: 'include',
       });
       if (!res.ok) {
-        const text = await res.text().catch(() => '');
-        return { data: null, error: new Error(text || `HTTP ${res.status}`) };
+        return { data: null, error: new Error('Unauthorized') };
       }
       const data = await res.json();
-      return { data, error: null } as { data: any; error: null };
+      return { data, error: null };
     } catch (e: any) {
-      return { data: null, error: e } as { data: null; error: any };
+      return { data: null, error: e };
     }
   },
-  // Fallback signIn/signUp/signOut if the generated client doesn't include them
-  signIn: (client as any)?.signIn ?? {
-    email: async ({ email, password }: { email: string; password: string }) =>
-      postJson('/api/auth/sign-in/email', { email, password }),
-  },
-  signUp: (client as any)?.signUp ?? {
-    email: async ({ email, password, name }: { email: string; password: string; name?: string }) =>
-      postJson('/api/auth/sign-up/email', { email, password, name }),
-  },
-  async signOut() {
-    if (typeof (client as any).signOut === 'function') return (client as any).signOut();
-    return postJson('/api/auth/sign-out', {});
-  },
-  useSession: () => {
-    if (typeof window === 'undefined') {
-      return { data: null, isPending: false, error: null };
+
+  async logout() {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+    if (token) {
+      await fetch(`${API_URL}/api/auth/logout`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        credentials: 'include',
+      }).catch(() => {});
+      localStorage.removeItem('auth_token');
     }
-    return client.useSession();
+    return { ok: true };
   },
-} as any;
+
+  getToken() {
+    return typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+  },
+};

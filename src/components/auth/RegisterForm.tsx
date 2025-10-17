@@ -1,44 +1,38 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Button } from '../ui/button';
-import { useResource } from '@elnatan/better-state/react';
-import { register as registerAction } from '../../state/auth';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
-import { fromPromise } from '@elnatan/better-state/async';
-import { useRouter } from 'next/navigation';
 import { authClient } from '../../utils/authClient';
 
 export default function RegisterForm() {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [res, setRes] = useState<ReturnType<typeof registerAction> | null>(null);
-  const idleRes = useMemo(() => fromPromise(Promise.resolve(null as any)), []);
-  const snap = useResource(res ?? idleRes);
-  const { data: session } = authClient.useSession();
-
-  useEffect(() => {
-    if (session) {
-      router.replace('/');
-    }
-  }, [session, router]);
-
-  useEffect(() => {
-    if (snap.data) {
-      router.replace('/');
-    }
-  }, [snap.data, router]);
+  const [loading, setLoading] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    const r = registerAction(email, name, password);
-    setRes(r);
+    setLoading(true);
+    
+    try {
+      const result = await authClient.register({ email, password, name });
+      
+      if (result?.token && result?.user) {
+        // Successful registration, redirect to dashboard
+        window.location.replace('/');
+      } else {
+        setError('Registration failed. Please try again.');
+        setLoading(false);
+      }
+    } catch (err: any) {
+      setError(err?.message || 'Registration failed. Please try again.');
+      setLoading(false);
+    }
   }
 
   return (
@@ -83,15 +77,15 @@ export default function RegisterForm() {
           </button>
         </div>
       </div>
-      {(error || snap.error) && (
-        <p className="text-red-400 text-sm">{error || snap.error?.message}</p>
+      {error && (
+        <p className="text-red-400 text-sm">{error}</p>
       )}
       <Button
         type="submit"
-        disabled={snap.loading}
+        disabled={loading}
         className="w-full h-12 rounded-xl bg-gradient-to-r from-[#1D75FF] via-[#5B6EF5] to-[#1B57E9] hover:brightness-105 shadow-sm"
       >
-        {snap.loading ? 'Loading…' : 'Register'}
+        {loading ? 'Loading…' : 'Register'}
       </Button>
     </form>
   );

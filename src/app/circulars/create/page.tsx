@@ -10,7 +10,6 @@ import { api } from '../../../utils/api';
 import { authClient } from '../../../utils/authClient';
 
 export default function CreateCircularPage() {
-  const { data: session } = authClient.useSession();
 
   const [title, setTitle] = useState('');
   const [sentFrom, setSentFrom] = useState('');
@@ -22,9 +21,11 @@ export default function CreateCircularPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const name = (session?.user as any)?.name || '';
-    if (name) setSentFrom(name);
-  }, [session]);
+    authClient.getMe().then(({ data }) => {
+      const name = data?.user?.name || '';
+      if (name) setSentFrom(name);
+    }).catch(() => {});
+  }, []);
 
   useEffect(() => {
     (async () => {

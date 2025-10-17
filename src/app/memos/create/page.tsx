@@ -28,7 +28,6 @@ function formReducer(state: FormState, update: Partial<FormState>): FormState {
 }
 
 export default function CreateMemoPage() {
-  const { data: session } = authClient.useSession();
   const [sentToOptions, setSentToOptions] = useState<string[]>([]);
   const [form, setForm] = useReducer(formReducer, {
     title: '',
@@ -51,9 +50,11 @@ export default function CreateMemoPage() {
   const attachTypeOptions = ['Payment Voucher', 'Document', 'Image', 'Other'];
 
   useEffect(() => {
-    const name = (session?.user as any)?.name || '';
-    if (name) { setForm({ sentFrom: name }); }
-  }, [session]);
+    authClient.getMe().then(({ data }) => {
+      const name = data?.user?.name || '';
+      if (name) { setForm({ sentFrom: name }); }
+    }).catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (modalOpen && nextHref) {

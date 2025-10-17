@@ -28,15 +28,11 @@ export default function Header({ title, subtitle, icon }: { title?: string; subt
 
   async function onLogout() {
     setOpen(false);
-    const r = logout();
-    r.subscribe((snap) => {
-      if (snap.data) {
-        // Force a full page reload to clear all state
-        if (typeof window !== 'undefined') {
-          window.location.replace('/auth/login');
-        }
-      }
-    });
+    await logout();
+    // Force a full page reload to clear all state
+    if (typeof window !== 'undefined') {
+      window.location.replace('/auth/login');
+    }
   }
 
   return (
@@ -96,8 +92,8 @@ function Welcome({ dateStr }: { dateStr: string }) {
   const [name, setName] = useState('User');
   
   useEffect(() => {
-    authClient.getSession().then((session: any) => {
-      const userName = (session?.data?.user as any)?.name || 'User';
+    authClient.getMe().then(({ data }) => {
+      const userName = data?.user?.name || 'User';
       setName(userName);
     }).catch(() => {});
   }, []);
@@ -117,8 +113,8 @@ function UserBadge() {
   const initials = initialsOf(name);
   
   useEffect(() => {
-    authClient.getSession().then((session: any) => {
-      const userName = (session?.data?.user as any)?.name || 'User';
+    authClient.getMe().then(({ data }) => {
+      const userName = data?.user?.name || 'User';
       setName(userName);
     }).catch(() => {});
   }, []);
