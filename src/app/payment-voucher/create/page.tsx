@@ -50,7 +50,7 @@ export default function CreatePaymentVoucherPage() {
 
   const fmtAmt = (n: number) =>
     Number.isFinite(n)
-      ? n.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+      ? n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
       : '0.00';
 
   const numberToWords = (num: number): string => {
@@ -98,10 +98,10 @@ export default function CreatePaymentVoucherPage() {
       groupIndex++;
     }
 
-    result = result.trim() + ' Naira';
+    result = result.trim() + ' Dollars';
 
     if (decPart > 0) {
-      result += ' and ' + convertHundreds(decPart) + ' Kobo';
+      result += ' and ' + convertHundreds(decPart) + ' cents';
     }
 
     return result.trim();
@@ -235,11 +235,11 @@ export default function CreatePaymentVoucherPage() {
                     <th className="border px-3 py-2 text-left font-medium">Class</th>
                     <th className="border px-3 py-2 text-left font-medium">Description</th>
                     <th className="border px-3 py-2 text-left font-medium">QTY</th>
-                    <th className="border px-3 py-2 text-left font-medium">Unit Price (₦)</th>
-                    <th className="border px-3 py-2 text-left font-medium">Amount (₦)</th>
+                    <th className="border px-3 py-2 text-left font-medium">Unit Price ($)</th>
+                    <th className="border px-3 py-2 text-left font-medium">Amount ($)</th>
                     <th className="border px-3 py-2 text-left font-medium">VAT %</th>
-                    <th className="border px-3 py-2 text-left font-medium">VAT Amount (₦)</th>
-                    <th className="border px-3 py-2 text-left font-medium">Gross Amount (₦)</th>
+                    <th className="border px-3 py-2 text-left font-medium">VAT Amount ($)</th>
+                    <th className="border px-3 py-2 text-left font-medium">Gross Amount ($)</th>
                     <th className="border px-3 py-2 text-left font-medium">WHT%</th>
                     <th className="border px-3 py-2 text-left font-medium">WHT Amount</th>
                     <th className="border px-3 py-2 text-left font-medium">Net Amount</th>

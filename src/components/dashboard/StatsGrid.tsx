@@ -37,7 +37,7 @@ export default function StatsGrid({ totals }: { totals?: { staffCount: number; a
         trend={t?.trendApplications ? { up: false, text: t.trendApplications } : undefined}
       />
       <Stat value={String(t?.projectsCount ?? 0)} label="Total projects" icon={<ProjectsIcon />} trend={t?.trendProjects ? { up: true, text: t.trendProjects } : undefined} />
-      <Stat value={String(t?.departmentsCount ?? 0)} label="Total departments" icon={<DeptIcon />} />
+      <Stat value={String(t?.departmentsCount ?? 0)} label="Total designations" icon={<DeptIcon />} />
     </div>
   );
 }

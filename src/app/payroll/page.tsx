@@ -437,7 +437,7 @@ function PayrollContent() {
             </div>)}
           </Card>
 
-          <footer className="text-center text-xs text-gray-400 pt-2 pb-6">Copyright © 2025 Relia Energy. All Rights Reserved</footer>
+          
         </div>
       </div>
     </div>

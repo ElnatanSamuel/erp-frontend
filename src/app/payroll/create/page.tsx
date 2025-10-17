@@ -122,32 +122,32 @@ export default function CreateSalaryDefinitionPage() {
               {/* Basic salary */}
               <div>
                 <Label className="block text-sm text-gray-600 mb-2">Basic salary</Label>
-                <Input placeholder="Enter amount in Naira" value={basic} onChange={(e) => setBasic(e.target.value)} />
+                <Input placeholder="Enter amount in Dollars" value={basic} onChange={(e) => setBasic(e.target.value)} />
               </div>
 
               {/* Allowance */}
               <div>
                 <Label className="block text-sm text-gray-600 mb-2">Allowance</Label>
-                <Input placeholder="Enter amount in Naira" value={allowance} onChange={(e) => setAllowance(e.target.value)} />
+                <Input placeholder="Enter amount in Dollars" value={allowance} onChange={(e) => setAllowance(e.target.value)} />
               </div>
 
               {/* Gross Salary */}
               <div>
                 <Label className="block text-sm text-gray-600 mb-2">Gross Salary</Label>
-                <Input placeholder="Enter amount in Naira" value={gross} onChange={(e) => setGross(e.target.value)} />
+                <Input placeholder="Enter amount in Dollars" value={gross} onChange={(e) => setGross(e.target.value)} />
               </div>
 
               {/* Deductions */}
               <div>
                 <Label className="block text-sm text-gray-600 mb-2">Deductions</Label>
-                <Input placeholder="Enter amount in Naira" value={deductions} onChange={(e) => setDeductions(e.target.value)} />
+                <Input placeholder="Enter amount in Dollars" value={deductions} onChange={(e) => setDeductions(e.target.value)} />
               </div>
 
               {/* Net Salary */}
               <div className="md:col-span-3">
                 <Label className="block text-sm text-gray-600 mb-2">Net Salary</Label>
                 <div className="flex items-center gap-4">
-                  <Input className="flex-1" placeholder="Enter amount in Naira" value={net} onChange={(e) => setNet(e.target.value)} />
+                  <Input className="flex-1" placeholder="Enter amount in Dollars" value={net} onChange={(e) => setNet(e.target.value)} />
                   <button onClick={onSubmit} disabled={submitting} className="inline-flex items-center justify-center h-11 px-8 rounded-xl text-white bg-gradient-to-r from-[#1D75FF] via-[#5B6EF5] to-[#1B57E9] hover:brightness-105 shadow-sm disabled:opacity-50">{submitting ? 'Creating...' : 'Create'}</button>
                 </div>
                 {error && <div className="mt-2 text-sm text-rose-600">{error}</div>}
@@ -155,7 +155,7 @@ export default function CreateSalaryDefinitionPage() {
             </div>
           </Card>
 
-          <footer className="text-center text-xs text-gray-400 pt-2 pb-6">Copyright © 2025 Relia Energy. All Rights Reserved</footer>
+          
         </div>
       </div>
     </div>

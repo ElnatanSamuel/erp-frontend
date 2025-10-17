@@ -39,7 +39,7 @@ export default function CreateProcurementPage() {
   const fmtAmt = (s?: string) => {
     const n = Number(String(s ?? '').replace(/,/g, '').trim());
     return Number.isFinite(n)
-      ? n.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+      ? n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
       : '0.00';
   };
 
@@ -329,11 +329,11 @@ export default function CreateProcurementPage() {
                         <th className="px-5 py-3 font-medium">Item</th>
                         <th className="px-5 py-3 font-medium">Quantity</th>
                         <th className="px-5 py-3 font-medium">Date</th>
-                        <th className="px-5 py-3 font-medium">Unit Price (₦)</th>
-                        <th className="px-5 py-3 font-medium">Total Price (₦)</th>
+                        <th className="px-5 py-3 font-medium">Unit Price ($)</th>
+                        <th className="px-5 py-3 font-medium">Total Price ($)</th>
                         <th className="px-5 py-3 font-medium">VAT %</th>
-                        <th className="px-5 py-3 font-medium">VAT Amount (₦)</th>
-                        <th className="px-5 py-3 font-medium">Gross Amount (₦)</th>
+                        <th className="px-5 py-3 font-medium">VAT Amount ($)</th>
+                        <th className="px-5 py-3 font-medium">Gross Amount ($)</th>
                       </tr>
                     </thead>
                     <tbody>

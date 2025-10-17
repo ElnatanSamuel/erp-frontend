@@ -56,7 +56,11 @@ export default function DashboardLoader() {
         </div>
         <div className="space-y-6">
           <StaffListTable rows={data?.staff} />
-          <ApplicationsCard />
+          <ApplicationsCard 
+            approved={data?.applicationStats?.approved || 0}
+            pending={data?.applicationStats?.pending || 0}
+            rejected={data?.applicationStats?.rejected || 0}
+          />
         </div>
       </div>
     </>

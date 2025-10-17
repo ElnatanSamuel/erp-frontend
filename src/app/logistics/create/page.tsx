@@ -20,6 +20,8 @@ export default function CreateLogisticsPage() {
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [voucherName, setVoucherName] = useState('');
+  const [voucherUrl, setVoucherUrl] = useState('');
+  const [uploadingVoucher, setUploadingVoucher] = useState(false);
   const [accountName, setAccountName] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [bankName, setBankName] = useState('');
@@ -45,7 +47,7 @@ export default function CreateLogisticsPage() {
         .trim()
     );
     return Number.isFinite(n)
-      ? n.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+      ? n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
       : '0.00';
   };
 
@@ -73,7 +75,30 @@ export default function CreateLogisticsPage() {
   function onAttachClick() {
     // Push current form data into Payment Voucher preview
     setPv({ title, purpose, dateFrom, dateTo, amount });
-    // Do not mark attachment; this button only snapshots the form.
+  }
+
+  async function onVoucherUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingVoucher(true);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/staff-applications/upload`, {
+        method: 'POST',
+        body: fd,
+        credentials: 'include',
+        headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` },
+      });
+      if (!res.ok) throw new Error('Upload failed');
+      const data = await res.json();
+      setVoucherName(data.name);
+      setVoucherUrl(data.url);
+    } catch (e: any) {
+      setError(e?.message || 'Failed to upload voucher');
+    } finally {
+      setUploadingVoucher(false);
+    }
   }
 
   async function onCreate(status: 'Draft' | 'Pending') {
@@ -113,7 +138,8 @@ export default function CreateLogisticsPage() {
             sentTo,
             dateFrom,
             dateTo,
-            voucherName, // remains empty => Attachment: No
+            voucherName,
+            voucherUrl,
             accountName,
             accountNumber,
             bankName,
@@ -181,7 +207,7 @@ export default function CreateLogisticsPage() {
               <div>
                 <label className="block text-sm text-gray-600 mb-2">Amount</label>
                 <Input
-                  placeholder="Enter amount in ₦"
+                  placeholder="Enter amount in $"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                 />
@@ -258,14 +284,19 @@ export default function CreateLogisticsPage() {
               </div>
 
               <div className="md:col-span-3">
-                <div>
+                <div className="flex items-center gap-4">
                   <button
                     type="button"
                     onClick={onAttachClick}
                     className="inline-flex items-center justify-center h-11 px-6 rounded-xl text-white bg-gradient-to-r from-[#1D75FF] via-[#5B6EF5] to-[#1B57E9] hover:brightness-105 shadow-sm"
                   >
-                    Attach Payment Voucher
+                    Preview Payment Voucher
                   </button>
+                  <label className="inline-flex items-center justify-center h-11 px-6 rounded-xl border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 cursor-pointer">
+                    <input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={onVoucherUpload} className="hidden" disabled={uploadingVoucher} />
+                    {uploadingVoucher ? 'Uploading...' : voucherName ? 'Change Voucher' : 'Upload Voucher'}
+                  </label>
+                  {voucherName && <span className="text-sm text-green-600">✓ {voucherName}</span>}
                 </div>
               </div>
             </div>
@@ -282,7 +313,7 @@ export default function CreateLogisticsPage() {
                       <th className="px-5 py-3 font-medium">Purpose</th>
                       <th className="px-5 py-3 font-medium">Date From</th>
                       <th className="px-5 py-3 font-medium">Date To</th>
-                      <th className="px-5 py-3 font-medium">Amount (₦)</th>
+                      <th className="px-5 py-3 font-medium">Amount ($)</th>
                     </tr>
                   </thead>
                   <tbody>

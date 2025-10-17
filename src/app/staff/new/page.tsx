@@ -29,9 +29,7 @@ export default function NewStaffPage() {
         </div>
         <div className="px-6 lg:px-10 py-6 space-y-6 overflow-y-auto">
           <NewStaffForm />
-          <footer className="text-center text-xs text-gray-400 pt-2 pb-6">
-            Copyright © 2025 Relia Energy. All Rights Reserved
-          </footer>
+          
         </div>
       </div>
     </div>

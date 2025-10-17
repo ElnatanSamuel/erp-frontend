@@ -52,7 +52,7 @@ export default function ProcurementPage() {
 
   const fmtAmt = (n: number) =>
     Number.isFinite(n)
-      ? n.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+      ? n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
       : '0.00';
 
   const fmtDate = (d: any) => {
@@ -107,7 +107,7 @@ export default function ProcurementPage() {
                   </svg>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-gray-900">₦{fmtAmt(kpis.totalAmount)}</div>
+                  <div className="text-2xl font-bold text-gray-900">${fmtAmt(kpis.totalAmount)}</div>
                   <div className="text-sm text-gray-500">Total cost incurred</div>
                 </div>
               </div>
@@ -217,7 +217,7 @@ export default function ProcurementPage() {
                         <td className="px-5 py-4">{String(idx + 1 + (page - 1) * limit).padStart(2, '0')}</td>
                         <td className="px-5 py-4 text-gray-900">{item.itemName}</td>
                         <td className="px-5 py-4">{item.quantity}</td>
-                        <td className="px-5 py-4">₦{fmtAmt(item.totalPrice || 0)}</td>
+                        <td className="px-5 py-4">${fmtAmt(item.totalPrice || 0)}</td>
                         <td className="px-5 py-4">{item.requestedBy || '—'}</td>
                         <td className="px-5 py-4">{item.sentTo || '—'}</td>
                         <td className="px-5 py-4">{fmtDate(item.date)}</td>

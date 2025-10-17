@@ -23,6 +23,8 @@ export default function RegisterForm() {
       const result = await authClient.register({ email, password, name });
       
       if (result?.token && result?.user) {
+        // Wait a bit to ensure token is stored
+        await new Promise(resolve => setTimeout(resolve, 100));
         // Successful registration, redirect to dashboard
         window.location.replace('/');
       } else {

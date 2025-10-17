@@ -136,14 +136,14 @@ export default function StocksInventoryPage() {
             </div>
           </Card>
 
-          <footer className="text-center text-xs text-gray-400 pt-2 pb-6">Copyright © 2025 Relia Energy. All Rights Reserved</footer>
+          
         </div>
       </div>
     </div>
   );
 }
 
-function formatMoney(n: number) { return n.toLocaleString('en-NG', { style: 'currency', currency: 'NGN', maximumFractionDigits: 0 }); }
+function formatMoney(n: number) { return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }); }
 function renderStockStatus(s?: string) {
   const text = s || 'In stock';
   const cls = text === 'Out of Stock' ? 'text-rose-600' : text === 'Low in Stock' ? 'text-amber-600' : 'text-emerald-600';

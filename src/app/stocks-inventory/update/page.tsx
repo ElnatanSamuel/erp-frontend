@@ -160,7 +160,7 @@ export default function UpdateStockPage() {
                 </div>
                 <div>
                   <label className="block text-sm text-gray-600 mb-2">Total amount</label>
-                  <Input disabled value={totalAmount.toLocaleString('en-NG', { style: 'currency', currency: 'NGN', maximumFractionDigits: 0 })} />
+                  <Input disabled value={totalAmount.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })} />
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-sm text-gray-600 mb-2">Supplier</label>

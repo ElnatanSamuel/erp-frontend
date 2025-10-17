@@ -13,7 +13,7 @@ export function BlueShieldCurrency({ className = '' }: { className?: string }) {
         </defs>
         <g>
           <path d="M24 4l14 6v10c0 9-6.3 17-14 18-7.7-1-14-9-14-18V10l14-6z" fill="url(#blueGrad)" opacity="0.95"/>
-          <text x="24" y="28" textAnchor="middle" fontSize="14" fill="#fff">₦</text>
+          <text x="24" y="28" textAnchor="middle" fontSize="14" fill="#fff">$</text>
         </g>
       </svg>
     </div>
